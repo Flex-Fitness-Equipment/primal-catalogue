@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Primal Performance Series — Flex Fitness Equipment</title>
+<style>
+  :root{
+    --bg:#0a0a0b; --panel:#141416; --line:#26262a; --txt:#f4f4f5;
+    --muted:#9b9ba3; --org:#ef6922; --orgdk:#c9551a; --blue:#1757ac;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.45;padding-bottom:86px}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .hero{position:relative;padding:58px 18px 38px;text-align:center;background:radial-gradient(1100px 420px at 50% -120px,rgba(239,105,34,.22),transparent 70%),var(--bg);border-bottom:1px solid var(--line)}
+  .kicker{letter-spacing:.32em;font-size:11px;font-weight:700;color:var(--org);text-transform:uppercase;margin-bottom:16px}
+  .hero h1{font-size:clamp(30px,6vw,54px);font-weight:800;line-height:1.04;letter-spacing:-.02em}
+  .hero h1 span{color:var(--org)}
+  .hero p{color:var(--muted);max-width:640px;margin:16px auto 0;font-size:clamp(14px,2.4vw,17px)}
+  .brandline{margin-top:22px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .brandline b{color:var(--txt)}
+
+  /* TABS */
+  .filters{position:sticky;top:0;z-index:20;background:rgba(10,10,11,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 0}
+  .filters .wrap{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:8px 15px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;transition:.18s;white-space:nowrap}
+  .chip:hover{border-color:#3a3a40;color:var(--txt)}
+  .chip.active{background:var(--org);border-color:var(--org);color:#fff}
+
+  /* HOME */
+  .home{padding:46px 0 10px;display:none}
+  .home.show{display:block}
+  .lead-big{font-size:clamp(18px,3vw,22px);font-weight:600;max-width:820px;line-height:1.5}
+  .lead-big b{color:var(--org)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:34px 0 12px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 16px;text-align:center}
+  .stat .n{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--org);line-height:1}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.04em}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+  .infocard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .infocard h3{font-size:17px;font-weight:800;margin-bottom:10px}
+  .infocard h3 .dot{color:var(--org)}
+  .infocard p{color:var(--muted);font-size:14.5px;margin-bottom:10px}
+  .infocard ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .infocard li{color:var(--muted);font-size:14px;padding-left:22px;position:relative}
+  .infocard li::before{content:"";position:absolute;left:0;top:7px;width:8px;height:8px;border-radius:2px;background:var(--org)}
+  .home-cta{text-align:center;margin:34px 0 6px}
+
+  /* SECTIONS */
+  .section{padding:40px 0 8px}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+  .section-head h2{font-size:clamp(20px,3.6vw,28px);font-weight:800;letter-spacing:-.01em}
+  .section-head .count{color:var(--muted);font-size:13px;font-weight:600}
+  .section-head .lead{flex-basis:100%;color:var(--muted);font-size:14px;max-width:800px}
+
+  /* GRID + CARDS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.18s;position:relative}
+  .card:hover{border-color:#3a3a40;box-shadow:0 12px 34px rgba(0,0,0,.45)}
+  .card.sel{border-color:var(--org);box-shadow:0 0 0 1px var(--org)}
+  .thumb{aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:contain;padding:14px;transition:.3s}
+  .card:hover .thumb img{transform:scale(1.04)}
+  .body{padding:14px 14px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .tag{align-self:flex-start;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--org);background:rgba(239,105,34,.13);padding:4px 9px;border-radius:6px}
+  .tag.plate{color:#3a8ee6;background:rgba(58,142,230,.14)}
+  .tag.rack{color:#9b7bf0;background:rgba(155,123,240,.14)}
+  .tag.acc{color:#4ec08a;background:rgba(78,192,138,.14)}
+  .tag.cardio{color:#3aa0ff;background:rgba(58,160,255,.12)}
+  .card h3{font-size:14.5px;font-weight:700;line-height:1.3}
+  .card .links{margin-top:auto;display:flex;gap:8px;align-items:center;padding-top:4px}
+  .view{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .view:hover{color:var(--org)}
+  .addbtn{margin-left:auto;border:1px solid var(--line);background:transparent;color:var(--txt);font-weight:700;font-size:12.5px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .addbtn:hover{border-color:var(--org);color:var(--org)}
+  .card.sel .addbtn{background:var(--org);border-color:var(--org);color:#fff}
+
+  /* QUOTE BAR */
+  .ctabar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(20,20,22,.95);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:12px 18px}
+  .ctabar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .ctabar .msg{font-size:14px;color:var(--muted)}
+  .ctabar .msg b{color:var(--txt)}
+  .btns{display:flex;gap:10px;flex-shrink:0}
+  .btn{padding:11px 20px;border-radius:10px;font-weight:700;font-size:14px;white-space:nowrap;transition:.18s;cursor:pointer;border:none}
+  .btn-primary{background:var(--org);color:#fff}
+  .btn-primary:hover{background:var(--orgdk)}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed}
+  .btn-ghost{border:1px solid var(--line);color:var(--txt);background:transparent}
+  .btn-ghost:hover{border-color:#52525a}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px}
+  .modal.show{display:flex}
+  .sheet{background:#111113;border:1px solid var(--line);border-radius:18px;max-width:560px;width:100%;padding:26px;margin:auto 0}
+  .sheet h2{font-size:22px;font-weight:800;margin-bottom:6px}
+  .sheet .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+  .selbox{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:18px;max-height:190px;overflow-y:auto}
+  .selbox .shead{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+  .selitem{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .selitem:last-child{border-bottom:none}
+  .selitem .x{color:var(--muted);cursor:pointer;font-weight:700;padding:0 4px}
+  .selitem .x:hover{color:var(--org)}
+  .empty{color:var(--muted);font-size:13.5px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .field input,.field textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 13px;color:var(--txt);font-size:14px;font-family:inherit}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--org)}
+  .field textarea{resize:vertical;min-height:64px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .modal-actions{display:flex;gap:10px;margin-top:8px}
+  .modal-actions .btn{flex:1;text-align:center}
+  .msg-ok,.msg-err{display:none;padding:14px;border-radius:10px;font-size:14px;margin-top:6px}
+  .msg-ok{background:rgba(78,192,138,.14);color:#7fe0ad;display:none}
+  .msg-err{background:rgba(239,105,34,.14);color:#ffb38a}
+  .closeX{position:sticky;top:0;float:right;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;margin:-6px -4px 0 0}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:34px 18px 20px;border-top:1px solid var(--line);margin-top:30px}
+  footer b{color:var(--txt)}
+
+  @media(max-width:620px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .cols{grid-template-columns:1fr}
+    .row2{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    .grid{grid-template-columns:repeat(2,1fr);gap:11px}
+    .card h3{font-size:12.5px}
+    .body{padding:11px}
+    .addbtn{padding:6px 9px}
+    .ctabar .msg{display:none}
+    .btns{width:100%}
+    .ctabar .btn{flex:1;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">Flex Fitness Equipment × Primal Strength</div>
+  <h1>Primal <span>Performance Series</span><br>Commercial Range</h1>
+  <p>The full Primal Performance Series — pin-loaded and plate-loaded machines, racks, benches and accessories built for high-traffic commercial floors. Browse, select what you want, and request a quote.</p>
+  <div class="brandline">50 Pieces &nbsp;·&nbsp; Pin-Loaded &nbsp;·&nbsp; Plate-Loaded &nbsp;·&nbsp; <b>Design · Supply · Deliver · Install</b></div>
+</header>
+
+<nav class="filters">
+  <div class="wrap">
+    <button class="chip active" data-filter="home">Home</button>
+    <button class="chip" data-filter="all">All Equipment</button>
+    <button class="chip" data-filter="pin">Pin-Loaded</button>
+    <button class="chip" data-filter="plate">Plate-Loaded</button>
+    <button class="chip" data-filter="rack">Racks &amp; Benches</button>
+    <button class="chip" data-filter="acc">Bars, Plates &amp; Accessories</button>
+    <button class="chip" data-filter="cardio">Cardio</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <section class="home show" id="home">
+    <p class="lead-big">Primal is the <b>UK's leading commercial strength brand</b> — engineered for the gym floor and trusted in over 25 countries. Flex Fitness Equipment is the Australian &amp; New Zealand partner, delivering the full Primal range end-to-end.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">2016</div><div class="l">Brand founded (UK)</div></div>
+      <div class="stat"><div class="n">25+</div><div class="l">Countries worldwide</div></div>
+      <div class="stat"><div class="n">50</div><div class="l">Pieces in this range</div></div>
+      <div class="stat"><div class="n">125kg</div><div class="l">Pin-select weight stacks</div></div>
+    </div>
+
+    <div class="cols">
+      <div class="infocard">
+        <h3><span class="dot">/</span> About Primal Strength</h3>
+        <p>Founded in 2016 by Steven Rinaldi, Primal set out to transform the gym floor — moving beyond rows of cardio into world-class strength and functional spaces. Today it's the UK's leading commercial strength brand, exporting to 25+ countries.</p>
+        <p>The range spans three series — Personal, Pro and Performance. This catalogue covers the <b style="color:var(--txt)">Performance Series</b>: commercial-grade pin-loaded and plate-loaded machines built for high-traffic floors.</p>
+      </div>
+      <div class="infocard">
+        <h3><span class="dot">/</span> Why Primal × Flex</h3>
+        <ul>
+          <li>End-to-end service: 3D gym design, equipment selection, delivery &amp; professional installation</li>
+          <li>125kg pin-select stacks — 5kg increments, precise 1:1 cable ratio</li>
+          <li>Plate-loaded machines with converging arcs and biomechanically correct paths</li>
+          <li>Full floor coverage — machines, racks, benches, bars, plates &amp; cardio</li>
+          <li>Backed by Flex's local AU/NZ supply, service and install teams</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="home-cta">
+      <button class="btn btn-primary" id="browseBtn">Browse the full range &rarr;</button>
+    </div>
+  </section>
+
+  <section class="section prod" data-group="pin" style="display:none">
+    <div class="section-head">
+      <h2>Pin-Loaded</h2><span class="count" id="cnt-pin"></span>
+      <p class="lead">125kg pin-select stacks, adjustable in 5kg increments with a precise 1:1 cable ratio. Fast resistance changes — ideal for busy commercial floors and PT sessions. Includes space-saving dual stations.</p>
+    </div>
+    <div class="grid" id="grid-pin"></div>
+  </section>
+
+  <section class="section prod" data-group="plate" style="display:none">
+    <div class="section-head">
+      <h2>Plate-Loaded</h2><span class="count" id="cnt-plate"></span>
+      <p class="lead">Free-weight feel with machine stability — converging arcs and biomechanically correct paths for heavy, progressive loading. Full upper body, legs and glute range.</p>
+    </div>
+    <div class="grid" id="grid-plate"></div>
+  </section>
+
+  <section class="section prod" data-group="rack" style="display:none">
+    <div class="section-head">
+      <h2>Racks &amp; Benches</h2><span class="count" id="cnt-rack"></span>
+    </div>
+    <div class="grid" id="grid-rack"></div>
+  </section>
+
+  <section class="section prod" data-group="acc" style="display:none">
+    <div class="section-head">
+      <h2>Bars, Plates &amp; Accessories</h2><span class="count" id="cnt-acc"></span>
+    </div>
+    <div class="grid" id="grid-acc"></div>
+  </section>
+
+  <section class="section prod" data-group="cardio" style="display:none">
+    <div class="section-head">
+      <h2>Cardio</h2><span class="count" id="cnt-cardio"></span>
+    </div>
+    <div class="grid" id="grid-cardio"></div>
+  </section>
+
+</main>
+
+<div class="ctabar">
+  <div class="wrap">
+    <div class="msg" id="cartmsg"><b>Select the pieces you want</b> and request a quote — we'll come back with pricing.</div>
+    <div class="btns">
+      <button class="btn btn-ghost" id="clearBtn" style="display:none">Clear</button>
+      <button class="btn btn-primary" id="quoteBtn">Request a quote</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE MODAL -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <span class="closeX" id="closeX">&times;</span>
+    <h2>Request a Quote</h2>
+    <p class="sub">Tell us a bit about your project and we'll send pricing on your selected pieces.</p>
+
+    <div class="selbox">
+      <div class="shead">Selected equipment (<span id="selCount">0</span>)</div>
+      <div id="selList"></div>
+    </div>
+
+    <form id="qform">
+      <div class="row2">
+        <div class="field"><label>Your name *</label><input name="Name" required></div>
+        <div class="field"><label>Business / gym name</label><input name="Business"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Email *</label><input type="email" name="Email" required></div>
+        <div class="field"><label>Phone</label><input name="Phone"></div>
+      </div>
+      <div class="field"><label>Which Flex location or rep are you dealing with?</label><input name="Flex Contact" placeholder="e.g. Brisbane store, or a team member's name"></div>
+      <div class="field"><label>Notes — timeframe, space, anything else</label><textarea name="Notes"></textarea></div>
+      <div class="msg-ok" id="msgOk">Thanks — your request has been sent. We'll be in touch shortly.</div>
+      <div class="msg-err" id="msgErr">Something went wrong sending that. Please email nav@flexequipment.com.au directly.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Send request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <b>Flex Fitness Equipment</b> &nbsp;·&nbsp; Primal Strength — Performance Series<br>
+  nav@flexequipment.com.au &nbsp;·&nbsp; 1800 577 312 &nbsp;·&nbsp; flexequipment.com.au
+</footer>
+
+<script>
+  // ====== CONFIG ======
+  const QUOTE_EMAIL = "nav@flexequipment.com.au"; // where quote requests are sent
+  const BASE = "https://flexequipment.com.au/products/";
+
+  const products = [
+    {t:"125kg Pin-Select — Chest Press", g:"pin", h:"primal-performance-series-125kg-pin-select-chest-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Chest-Press.webp?v=1756959919"},
+    {t:"125kg Pin-Select — Shoulder Press", g:"pin", h:"primal-performance-series-125kg-pin-select-shoulder-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Shoulder-Press.webp?v=1756960590"},
+    {t:"125kg Pin-Select — Tricep Dip", g:"pin", h:"primal-performance-series-125kg-pin-select-tricep-dip", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Tricep-Dip.webp?v=1756961287"},
+    {t:"125kg Pin-Select — Prone Leg Curl", g:"pin", h:"primal-performance-series-125kg-pin-select-prone-leg-curl", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Prone-Hamstring-Curl.webp?v=1756961488"},
+    {t:"125kg Pin-Select — Pec Fly / Rear Delt", g:"pin", h:"primal-performance-series-125kg-pin-select-pec-fly-rear-delt", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Pec-Dec.webp?v=1744082762"},
+    {t:"125kg Pin-Select — Standing Lateral Raise", g:"pin", h:"primal-performance-series-125kg-pin-select-standing-lateral-raise", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries125kgPin-Select-StandingLateralRaise.jpg?v=1726715291"},
+    {t:"125kg Pin-Select Cable Crossover (2 × 125kg Stacks)", g:"pin", h:"primal-performance-series-125kg-pin-select-cable-crossover-with-2-x-125kg-stacks", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/crossover_2.jpg?v=1778544074"},
+    {t:"125kg Pin-Select Dual — Pec Fly / Rear Delt V2", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-pec-fly-rear-delt-v2", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Pec-Dec_1.webp?v=1756968141"},
+    {t:"125kg Pin-Select Dual — Bicep Curl / Tricep Extension", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-bicep-curl-tricep-extension", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Bicepfixed.webp?v=1756959470"},
+    {t:"125kg Pin-Select Dual — Chest / Shoulder Press", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-chest-shoulder-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Shoulderpress1.webp?v=1756959305"},
+    {t:"125kg Pin-Select Dual — Lat Pull / Seated Row", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-lat-pull-seated-row", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries125kgPin-SelectDual-LatPullSeatedRow_2.jpg?v=1726716048"},
+    {t:"125kg Pin-Select Dual — Leg Ext / Prone Leg Curl", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-leg-ext-prone-leg-curl", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/LegExtenCorrectfadecopy.webp?v=1756962656"},
+    {t:"125kg Pin-Select Dual — Seated Leg Ext / Leg Curl", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-seated-leg-ext-leg-curl", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries125kgPin-SelectDual-SeatedLegExtLegCurl_9.jpg?v=1726716512"},
+    {t:"125kg Pin-Select Dual — Adductor / Abductor", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-adductor-abductor", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Monster-Series-Adductor-abductor.webp?v=1736816258"},
+    {t:"125kg Pin-Select Dual — Viking Press & Calf Raise", g:"pin", h:"primal-performance-series-125kg-pin-select-dual-viking-press-calf-raise", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries125kgPin-SelectDual-VikingPress_CalfRaise.webp?v=1726721248"},
+    {t:"Plate Loaded Adjustable Chest Press", g:"plate", h:"primal-performance-series-plate-loaded-adjustable-chest-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedAdjustableChestPress_1.jpg?v=1726711577"},
+    {t:"Plate Loaded Adjustable Incline Chest Press", g:"plate", h:"primal-performance-series-plate-loaded-adjustable-incline-chest-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedAdjustableInclineChestPress.webp?v=1726721711"},
+    {t:"Standing Chest Press", g:"plate", h:"primal-performance-series-standing-chest-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesStandingChestPress.webp?v=1726722082"},
+    {t:"Plate Loaded Linear Shoulder Press", g:"plate", h:"primal-performance-series-plate-loaded-linear-shoulder-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedLinearShoulderPress.webp?v=1726721379"},
+    {t:"Plate Loaded Incline Pec Fly", g:"plate", h:"primal-performance-series-plate-loaded-incline-pec-fly", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSSS0279-Performance-Plate-Loaded-Incline-Pec-Fly-Plate-Loaded-Machines-Hero-Render.jpg?v=1778549111"},
+    {t:"Plate Loaded Pec Fly", g:"plate", h:"primal-performance-series-plate-loaded-pec-fly", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedPecFly_1.jpg?v=1726710573"},
+    {t:"Plate Loaded Pullover", g:"plate", h:"primal-performance-series-plate-loaded-pullover", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedPullover.webp?v=1726721472"},
+    {t:"Plate Loaded Bicep Curl", g:"plate", h:"primal-performance-series-plate-loaded-bicep-curl", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedBicepCurl_1.jpg?v=1726713560"},
+    {t:"Plate Loaded Low Row", g:"plate", h:"primal-performance-series-plate-loaded-low-row", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/QuickWebPhotos-Jake_59.png?v=1756962383"},
+    {t:"Plate Loaded Swivel Handle Row", g:"plate", h:"primal-performance-series-plate-loaded-swivel-handle-row", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedSwivelHandleRow.webp?v=1726721533"},
+    {t:"Plate Loaded Rotating Smith Back Row", g:"plate", h:"primal-performance-series-plate-loaded-rotating-smith-back-row", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/QuickWebPhotos-Jake_60.png?v=1756962504"},
+    {t:"Plate Loaded ISO Front Pull Down / Dual High Row", g:"plate", h:"primal-performance-series-plate-loaded-iso-front-pull-down-dual-high-row", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Latpull_down_Main_image.jpg?v=1778545616"},
+    {t:"Incline T-Bar Row (Adj Handle)", g:"plate", h:"primal-pro-series-incline-t-bar-row-with-adj-handle", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/TbarSilverhandles.webp?v=1732155978"},
+    {t:"Plate Loaded Ab Crunch", g:"plate", h:"performance-series-plate-loaded-ab-crunch", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/HeroRender.jpg?v=1778556875"},
+    {t:"Power Squat", g:"plate", h:"primal-performance-series-plate-loaded-power-squat", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedPowerSquat.webp?v=1726721786"},
+    {t:"Pendulum Squat", g:"plate", h:"primal-performance-series-pendulum-squat", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPendulumSquat_1.jpg?v=1726715716"},
+    {t:"ISO Hack Squat", g:"plate", h:"primal-performance-series-iso-hack-squat", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesISOHackSquat.jpg?v=1726717529"},
+    {t:"Belt Squat Machine", g:"plate", h:"primal-performance-series-belt-squat-machine", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSSS0072-Belt-Squat.webp?v=1728281942"},
+    {t:"45 Degree Leg Press", g:"plate", h:"primal-performance-series-45-degree-leg-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries45DegreeLegPress.jpg?v=1726714000"},
+    {t:"70 Degree Incline Leg Press", g:"plate", h:"primal-performance-series-plate-loaded-70-degree-incline-leg-press", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoaded70DegreeInclineLegPress.webp?v=1726721654"},
+    {t:"Plate Loaded Standing Hamstring Curl", g:"plate", h:"primal-performance-series-plate-loaded-standing-hamstring-curl", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesPlateLoadedStandingHamstringCurl1.webp?v=1726721835"},
+    {t:"ISO Seated Calf Machine", g:"plate", h:"primal-performance-series-iso-seated-calf-machine", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesISOSeatedCalfMachine.jpg?v=1726714196"},
+    {t:"Plate Loaded Glute / Hip Abductor", g:"plate", h:"primal-performance-series-plate-loaded-glute-hip-abductor-1", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/AbductorWebimages_main.webp?v=1732153029"},
+    {t:"Plate Loaded Swivel Footplate Glute Drive", g:"plate", h:"performance-series-plate-loaded-swivel-footplate-glute-drive", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/TOPDOWNVIEW.jpg?v=1778547148"},
+    {t:"Plate Loaded Standing Hip Thrust", g:"plate", h:"primal-performance-series-plate-loaded-standing-hip-thrust", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSSS0272-Performance_Standing_Hip_Thrust-Plate_Loaded_Machines-Hero_Render.webp?v=1744083178"},
+    {t:"Plate Loaded Rear Kick / Glute Kickback", g:"plate", h:"primal-performance-series-plate-loaded-rear-kick-glute-kickback", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/kickbackre-sized4.webp?v=1744083260"},
+    {t:"V2 Modular Half Rack", g:"rack", h:"primal-performance-series-v2-modular-half-rack", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSPR2099-ModularHalfRack-RENDER.webp?v=1740102829"},
+    {t:"V2 Modular Half Rack + 100kg Weight Stack", g:"rack", h:"primal-performance-series-v2-modular-half-rack-with-100kg-weight-stack", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSPR2099-ModularHalfRack-RENDER.webp?v=1740102829"},
+    {t:"100kg Weight Stack (Half Rack Add-On)", g:"rack", h:"100kg-weight-stack-for-primal-performance-series-half-rack", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/100kgWeightStackforPrimalPerformanceSeriesHalfRack.webp?v=1726721079"},
+    {t:"Club Adjustable Bench", g:"rack", h:"primal-performance-series-club-adjustable-bench", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/Primal-Performance-Series-Club-Adjustable-Bench.jpg?v=1726709602"},
+    {t:"Club Hyper Extension", g:"rack", h:"primal-performance-series-club-hyper-extension", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PerformanceSeriesClubHyperExtension.webp?v=1726721273"},
+    {t:"8-Needle Olympic Barbell (680kg Rated)", g:"acc", h:"primal-performance-series-8-needle-steel-680kg-rated", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeries8NeedleSteel680kgRatedLogo.webp?v=1726721194"},
+    {t:"Urethane Bumper Plates", g:"acc", h:"primal-performance-series-urethane-bumper-plates", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PSPA5004-Performance-100kg-CPU-Bumper-Plate-Set-Bumper-Sets-Hero-Render.webp?v=1750129130"},
+    {t:"Nylon Lockjaw Collar (Magnetic)", g:"acc", h:"primal-performance-series-nylon-lockjaw-collar-magnetic", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/PrimalPerformanceSeriesNylonLockjawCollar_Magnetic_Single.webp?v=1726721127"},
+    {t:"Compact Stair Climber with LED Console", g:"cardio", h:"primal-performance-series-compact-stair-climber-with-led-console", img:"https://cdn.shopify.com/s/files/1/0848/2753/7719/files/QuickWebPhotos-Jake_43.png?v=1755835091"}
+  ];
+
+  const tagLabel = {pin:"Pin-Loaded", plate:"Plate-Loaded", rack:"Rack / Bench", acc:"Accessory", cardio:"Cardio"};
+  const byHandle = {};
+  products.forEach(p=>byHandle[p.h]=p);
+  const selected = new Set();
+
+  // ===== REP LINK (?rep=name@flexequipment.com.au) =====
+  // Locked to Flex domains so it can't be used to spam arbitrary addresses.
+  let repEmail=null, repName=null;
+  const rp=(new URLSearchParams(location.search).get("rep")||"").trim().toLowerCase();
+  if(/^[a-z0-9._-]+@(flexequipment\.com\.au|flexequipment\.co\.nz)$/.test(rp)){
+    repEmail=rp;
+    const local=rp.split("@")[0].split(/[._-]/)[0];
+    repName=local.charAt(0).toUpperCase()+local.slice(1);
+    // banner so the customer sees who shared it
+    const b=document.createElement("div");
+    b.style.cssText="text-align:center;font-size:12.5px;color:#ef6922;padding:9px 12px;background:rgba(239,105,34,.09);border-bottom:1px solid #26262a;font-weight:600";
+    b.innerHTML="Shared with you by <b>"+repName+"</b> · Flex Fitness Equipment";
+    document.body.insertBefore(b,document.body.firstChild);
+  }
+
+  function card(p){
+    return `<div class="card" data-h="${p.h}">
+      <a class="thumb" href="${BASE}${p.h}" target="_blank" rel="noopener"><img loading="lazy" src="${p.img}" alt="${p.t}"></a>
+      <div class="body">
+        <span class="tag ${p.g}">${tagLabel[p.g]}</span>
+        <h3>${p.t}</h3>
+        <div class="links">
+          <a class="view" href="${BASE}${p.h}" target="_blank" rel="noopener">View details &rarr;</a>
+          <button class="addbtn" data-h="${p.h}">+ Add</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  ["pin","plate","rack","acc","cardio"].forEach(g=>{
+    const items = products.filter(p=>p.g===g);
+    document.getElementById("grid-"+g).innerHTML = items.map(card).join("");
+    document.getElementById("cnt-"+g).textContent = items.length + " pieces";
+  });
+
+  // ===== TABS =====
+  function setTab(f){
+    document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active",x.dataset.filter===f));
+    const home=document.getElementById("home");
+    if(f==="home"){home.classList.add("show");document.querySelectorAll(".prod").forEach(s=>s.style.display="none");}
+    else{home.classList.remove("show");document.querySelectorAll(".prod").forEach(s=>{s.style.display=(f==="all"||s.dataset.group===f)?"":"none";});}
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+  document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>setTab(c.dataset.filter)));
+  document.getElementById("browseBtn").addEventListener("click",()=>setTab("all"));
+
+  // ===== SELECTION =====
+  function toggle(h,btn){
+    const cardEl=document.querySelector('.card[data-h="'+h+'"]');
+    if(selected.has(h)){selected.delete(h);cardEl.classList.remove("sel");btn.textContent="+ Add";}
+    else{selected.add(h);cardEl.classList.add("sel");btn.textContent="✓ Added";}
+    updateBar();
+  }
+  document.querySelectorAll(".addbtn").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();toggle(b.dataset.h,b);}));
+
+  function updateBar(){
+    const n=selected.size;
+    const msg=document.getElementById("cartmsg");
+    const clr=document.getElementById("clearBtn");
+    const qb=document.getElementById("quoteBtn");
+    if(n>0){msg.innerHTML="<b>"+n+" piece"+(n>1?"s":"")+" selected</b> — ready to request a quote.";clr.style.display="";qb.textContent="Request quote ("+n+")";}
+    else{msg.innerHTML="<b>Select the pieces you want</b> and request a quote — we'll come back with pricing.";clr.style.display="none";qb.textContent="Request a quote";}
+  }
+  document.getElementById("clearBtn").addEventListener("click",()=>{
+    selected.forEach(h=>{const c=document.querySelector('.card[data-h="'+h+'"]');if(c){c.classList.remove("sel");c.querySelector(".addbtn").textContent="+ Add";}});
+    selected.clear();updateBar();
+  });
+
+  // ===== MODAL =====
+  const modal=document.getElementById("modal");
+  function openModal(){
+    const list=document.getElementById("selList");
+    if(repEmail){const f=document.querySelector('input[name="Flex Contact"]');if(f&&!f.value)f.value=repName;}
+    document.getElementById("selCount").textContent=selected.size;
+    if(selected.size===0){list.innerHTML='<div class="empty">No pieces selected yet — you can still send a general enquiry, or close this and tap “+ Add” on the machines you want.</div>';}
+    else{
+      list.innerHTML=[...selected].map(h=>{const p=byHandle[h];
+        return '<div class="selitem"><span>'+p.t+'</span><span class="x" data-h="'+h+'">&times;</span></div>';}).join("");
+      list.querySelectorAll(".x").forEach(x=>x.addEventListener("click",()=>{
+        const h=x.dataset.h;selected.delete(h);
+        const c=document.querySelector('.card[data-h="'+h+'"]');if(c){c.classList.remove("sel");c.querySelector(".addbtn").textContent="+ Add";}
+        updateBar();openModal();
+      }));
+    }
+    modal.classList.add("show");
+  }
+  function closeModal(){modal.classList.remove("show");}
+  document.getElementById("quoteBtn").addEventListener("click",openModal);
+  document.getElementById("closeX").addEventListener("click",closeModal);
+  document.getElementById("cancelBtn").addEventListener("click",closeModal);
+  modal.addEventListener("click",e=>{if(e.target===modal)closeModal();});
+
+  // ===== SUBMIT =====
+  async function postForm(endpoint,payload){
+    try{
+      const r=await fetch("https://formsubmit.co/ajax/"+endpoint,{
+        method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      const j=await r.json();
+      return r.ok && (j.success===true||j.success==="true");
+    }catch(e){return false;}
+  }
+  document.getElementById("qform").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const btn=document.getElementById("submitBtn");
+    const ok=document.getElementById("msgOk"), err=document.getElementById("msgErr");
+    ok.style.display="none";err.style.display="none";
+    btn.disabled=true;btn.textContent="Sending…";
+    const fd=new FormData(e.target);
+    const subj=(fd.get("Business")||fd.get("Name")||"Website");
+    const itemsList=[...selected].map(h=>{const p=byHandle[h];return "• "+p.t+"  ("+BASE+p.h+")";}).join("\n");
+    const base={
+      _template:"table",
+      Name:fd.get("Name"), Business:fd.get("Business"), Email:fd.get("Email"),
+      Phone:fd.get("Phone"), "Flex Contact":fd.get("Flex Contact")||(repName||""), Notes:fd.get("Notes"),
+      "Selected Equipment":itemsList||"(none selected — general enquiry)"
+    };
+    let success=false;
+    if(repEmail){
+      // Rep link: goes ONLY to the salesperson who shared it.
+      success=await postForm(repEmail,{...base,_subject:"Primal Quote Request — "+subj});
+      if(!success){
+        // Safety net: if the rep's link isn't activated yet, route to the central inbox so the lead is never lost.
+        success=await postForm(QUOTE_EMAIL,{...base,_cc:"jay@flexequipment.com.au,gavin@flexequipment.com.au","Intended Rep":repEmail+" — their link isn't activated yet, please forward & ask them to activate",_subject:"Primal Quote (rep link pending) — "+subj});
+      }
+    }else{
+      // Plain link: central crew.
+      success=await postForm(QUOTE_EMAIL,{...base,_cc:"jay@flexequipment.com.au,gavin@flexequipment.com.au",_subject:"Primal Quote Request — "+subj});
+    }
+    if(success){
+      e.target.style.display="none";ok.style.display="block";
+      document.querySelector(".sheet h2").textContent="Request sent ✓";
+      document.querySelector(".sheet .sub").style.display="none";
+      document.querySelector(".selbox").style.display="none";
+    }else{
+      err.style.display="block";btn.disabled=false;btn.textContent="Send request";
+    }
+  });
+
+  updateBar();
+</script>
+</body>
+</html>
